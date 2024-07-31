@@ -56,11 +56,12 @@ public class EmailManager {
         String hashedString = createCode(hashedBeforeString+salt);
         try {
             helper.setTo(to);
-            helper.setText(String.format(EmailTemplate.WELCOME.getTemplate(), hashedBeforeString));
+            message.setText(String.format(EmailTemplate.WELCOME.getTemplate(), hashedBeforeString), "utf-8", "html");
             helper.setSubject(EmailTemplate.WELCOME.getSubject());
             mailSender.send(message);
             return hashedString;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new MessagingException(e.getMessage());
         }
     }
