@@ -20,9 +20,8 @@ import java.time.format.DateTimeFormatter;
 public class EmailManager {
 
     private static final int CODE_LENGTH = 8;
-    private CommonUtil commonUtil;
-    @Autowired
-    private JavaMailSender mailSender;
+    final CommonUtil commonUtil;
+    final JavaMailSender mailSender;
     @Value("${jwt.secret}")
     String salt;
 
@@ -57,11 +56,12 @@ public class EmailManager {
         String hashedString = createCode(hashedBeforeString+salt);
         try {
             helper.setTo(to);
-            helper.setText(String.format(EmailTemplate.WELCOME.getTemplate(), hashedBeforeString));
+            message.setText(String.format(EmailTemplate.WELCOME.getTemplate(), hashedBeforeString), "utf-8", "html");
             helper.setSubject(EmailTemplate.WELCOME.getSubject());
             mailSender.send(message);
             return hashedString;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new MessagingException(e.getMessage());
         }
     }
